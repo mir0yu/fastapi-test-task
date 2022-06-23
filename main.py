@@ -1,5 +1,5 @@
 from fastapi import (
-    FastAPI, WebSocket, WebSocketDisconnect, Request, Response
+    FastAPI, WebSocket, WebSocketDisconnect, Request
 )
 from typing import List
 from fastapi.templating import Jinja2Templates
