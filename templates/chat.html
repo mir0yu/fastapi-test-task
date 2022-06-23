@@ -27,13 +27,13 @@
         $(document).ready(function () {
             var receiver = "";
             var socket = new WebSocket("ws://127.0.0.1:8000/api/chat");
-            var count = 1;
             socket.onmessage = function (event) {
                 var parent = $("#messages");
-                var message = JSON.parse(event.data)['message']
-                if (message != undefined) {
+                var data = JSON.parse(event.data);
+                var message = data['message'];
+                var count = data['count'];
+                if (message != '') {
                     var content = "<p>" + count + " " + message + "</p>";
-                    count += 1;
                     parent.append(content);
                     parent.scrollTop(parent.get(0).scrollHeight);
                 }
