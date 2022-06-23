@@ -3,22 +3,21 @@ from fastapi import (
     FastAPI, WebSocket, WebSocketDisconnect, Request, Response
 )
 from typing import List
-from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
-# locate templates
+# Locate templates provided by Jinja2Templates
 templates = Jinja2Templates(directory="templates")
 
 
-
+# Root api breakpoint
 @app.get("/")
 def get_chat(request: Request):
-    return templates.TemplateResponse("chat.html", {"request": request})
+    return templates.TemplateResponse("newchat.html", {"request": request})
 
 
-
+# Manager of connections
 class SocketManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
@@ -37,7 +36,7 @@ class SocketManager:
 
 manager = SocketManager()
 
-
+# Subsribe on broadcast of Chat
 @app.websocket("/api/chat")
 async def chat(websocket: WebSocket):
         await manager.connect(websocket)

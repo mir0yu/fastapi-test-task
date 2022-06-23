@@ -1,70 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <title>App</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-        .card {
-            position: absolute;
-            width: 95%;
-            height: 80%;
-            box-shadow: 0px 0px 5px gray;
-            left: 2.5%;
-            top: 5%;
-        }
-        #chat-form {
-            position: absolute;
-            top: 90%;
-            transform: translateY(-90%);
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        #messages {
-            padding-bottom: 10%;
-            padding-left: 20px;
-            padding-top: 20px;
-            max-height: 80%;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        #chat-form input {
-            width: 400px;
-            padding-right: 20%;
-        }
-        #chat-form button {
-            position: absolute;
-            left: 85%;
-        }
-        #profile {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-    </style>
+</head>
+
+<body>
+    <main class="max-h-100 min-h-screen min-w-full bg-gradient-to-b bg-blue-100 flex justify-center">
+        <div
+            class="m-auto bg-white shadow-lg shadow-cyan-500/50 w-min-w min-h-min sm:max-w-5xl md:max-w-7xl rounded-2xl font-sans mx-2 md:mx-12">
+            <div id="quiz" class="quiz px-2 sm:px-12 py-4 overflow-auto">
+                <div id="messages" class="max-h-80 h-80 min-w-full max-w-sm py-2 overflow-auto"></div>
+                    <form class="form-inline flex justify-between py-2" id="chat-form">
+                        <input type="text" class="form-control mr-2 max-w-xl md:max-w-full" placeholder="Введите сообщение">
+                        <button id="send" type="submit"
+                            class="btn-next rounded-3xl text-md bg-blue-100 px-2 py-1 md:ml-12 shadow-md">Отправить</button>
+                    </form>
+            </div>
+        </div>
+    </main>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             var receiver = "";
             var socket = new WebSocket("ws://127.0.0.1:8000/api/chat");
             var count = 1;
-            socket.onmessage = function(event) {
+            socket.onmessage = function (event) {
                 var parent = $("#messages");
-                var data = JSON.parse(event.data);
-                var message = data['message']
+                var message = JSON.parse(event.data)['message']
                 if (message != undefined) {
-                    var content = "<p><span> "+count+"</span><span> "+message+"</span></p>";
-                count += 1;
-                parent.append(content);
-                parent.scrollTop(parent.get(0).scrollHeight);
+                    var content = "<p>" + count + " " + message + "</p>";
+                    count += 1;
+                    parent.append(content);
+                    parent.scrollTop(parent.get(0).scrollHeight);
                 }
             };
-            $("#chat-form").on("submit", function(e){
+            $("#chat-form").on("submit", function (e) {
                 e.preventDefault();
                 var message = $("input").val();
-                if (message){
+                if (message) {
                     data = {
                         "message": message
                     };
@@ -75,19 +52,6 @@
             });
         });
     </script>
-</head>
-<body>
-    <div class="chat-body card">
-        <div class="card-body">
-            <strong id="profile"></strong><h4 class="card-title text-center"> App </h4>
-            <hr>
-            <div id="messages">
-            </div>
-            <form class="form-inline" id="chat-form">
-                <input type="text" class="form-control" placeholder="Введите сообщение">
-                <button id="send" type="submit" class="btn btn-primary">Отправить</button>
-            </form>
-        </div>
-    </div>
 </body>
+
 </html>
