@@ -40,7 +40,6 @@ manager = SocketManager()
 async def chat(websocket: WebSocket):
         count = 0
         await manager.connect(websocket)
-        response = {'message': ''}
         try:
             while True:
                 data = await websocket.receive_json()
