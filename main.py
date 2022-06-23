@@ -20,7 +20,6 @@ def get_chat(request: Request):
 class SocketManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
-        self.message_count = 0
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
@@ -28,13 +27,8 @@ class SocketManager:
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove((websocket))
-    
-    def counter(self):
-        self.message_count+=1
-        return self.message_count
 
     async def broadcast(self, data: dict):
-        data.update({"count": self.counter()})
         for connection in self.active_connections:
             await connection.send_json(data)
 
@@ -44,13 +38,15 @@ manager = SocketManager()
 # Subsribe on broadcast of Chat
 @app.websocket("/api/chat")
 async def chat(websocket: WebSocket):
+        count = 0
         await manager.connect(websocket)
         response = {'message': ''}
         try:
             while True:
                 data = await websocket.receive_json()
-                await manager.broadcast(data)
+                if (data):
+                    count += 1
+                    data.update({"count": count})
+                    await manager.broadcast(data)
         except WebSocketDisconnect:
             manager.disconnect(websocket)
-            response['message'] = "left"
-            await manager.broadcast(response)
