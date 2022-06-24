@@ -10,7 +10,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 
-# Root api breakpoint
+# Root api endpoint
 @app.get("/")
 def get_chat(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
