@@ -28,9 +28,9 @@ class SocketManager:
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove((websocket))
 
-    async def broadcast(self, data: dict):
-        for connection in self.active_connections:
-            await connection.send_json(data)
+    async def broadcast(self, websocket: WebSocket, data: dict):
+        if websocket in self.active_connections:
+            await websocket.send_json(data)
 
 
 manager = SocketManager()
@@ -46,6 +46,6 @@ async def chat(websocket: WebSocket):
                 if (data):
                     count += 1
                     data.update({"count": count})
-                    await manager.broadcast(data)
+                    await manager.broadcast(websocket, data)
         except WebSocketDisconnect:
             manager.disconnect(websocket)
