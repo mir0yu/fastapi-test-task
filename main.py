@@ -1,9 +1,7 @@
 from fastapi import (
     FastAPI, WebSocket, WebSocketDisconnect, Request
 )
-from typing import List
 from fastapi.templating import Jinja2Templates
-import websockets
 
 app = FastAPI()
 
@@ -16,25 +14,6 @@ templates = Jinja2Templates(directory="templates")
 def get_chat(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
 
-
-# # Manager of connections
-# class SocketManager:
-#     def __init__(self):
-#         self.active_connections: List[WebSocket] = []
-
-#     async def connect(self, websocket: WebSocket):
-#         await websocket.accept()
-#         self.active_connections.append((websocket))
-
-#     def disconnect(self, websocket: WebSocket):
-#         self.active_connections.remove((websocket))
-
-#     async def broadcast(self, websocket: WebSocket, data: dict):
-#         if websocket in self.active_connections:
-#             await websocket.send_json(data)
-
-
-# manager = SocketManager()
 
 # Subsribe on broadcast of Chat
 @app.websocket("/api/chat")
